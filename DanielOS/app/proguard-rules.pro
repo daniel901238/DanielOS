@@ -1,0 +1,1 @@
+# DanielOS proguard rules (placeholder)
