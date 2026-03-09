@@ -7,7 +7,10 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.io.BufferedReader
+import java.io.BufferedWriter
 import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
@@ -15,7 +18,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var outputScroll: ScrollView
     private lateinit var inputCommand: EditText
 
-    private val ioExecutor = Executors.newSingleThreadExecutor()
+    private val ioExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+
+    @Volatile
+    private var shellProcess: Process? = null
+    private var shellWriter: BufferedWriter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,48 +34,112 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.runButton).setOnClickListener {
             val cmd = inputCommand.text.toString().trim()
-            if (cmd.isEmpty()) return@setOnClickListener
-            appendLine("$ $cmd")
+            if (cmd.isBlank()) return@setOnClickListener
             inputCommand.setText("")
-            runCommand(cmd)
+            sendToShell(cmd)
         }
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
-            outputText.text = "DanielOS v0.2\n$ "
+            outputText.text = "DanielOS v0.3 (interactive shell)\n"
+            appendPrompt()
+        }
+
+        findViewById<Button>(R.id.restartButton).setOnClickListener {
+            restartShellSession()
         }
 
         findViewById<Button>(R.id.helpButton).setOnClickListener {
             appendLine("사용 예시: pwd, ls, uname -a, whoami")
-            appendLine("현재는 MVP 단계로 1회 명령 실행 방식입니다.")
+            appendLine("v0.3: 단발 실행이 아니라 셸 세션을 유지합니다.")
+            appendPrompt()
         }
+
+        startShellSession()
     }
 
-    private fun runCommand(command: String) {
+    private fun startShellSession() {
         ioExecutor.execute {
             try {
-                val process = ProcessBuilder("sh", "-c", command)
+                val proc = ProcessBuilder("sh")
                     .redirectErrorStream(true)
                     .start()
 
-                val out = StringBuilder()
-                BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
+                shellProcess = proc
+                shellWriter = BufferedWriter(OutputStreamWriter(proc.outputStream))
+
+                runOnUiThread {
+                    appendLine("[session] shell started")
+                    appendPrompt()
+                }
+
+                BufferedReader(InputStreamReader(proc.inputStream)).use { reader ->
                     var line: String?
                     while (reader.readLine().also { line = it } != null) {
-                        out.appendLine(line)
+                        val safeLine = line ?: continue
+                        runOnUiThread { appendLine(safeLine) }
                     }
                 }
 
-                val code = process.waitFor()
+                val code = proc.waitFor()
                 runOnUiThread {
-                    val text = out.toString().ifBlank { "(출력 없음)" }
-                    appendLine(text.trimEnd())
-                    appendLine("[exit=$code]")
-                    appendLine("$ ")
+                    appendLine("[session] shell exited (code=$code)")
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    appendLine("오류: ${e.message}")
-                    appendLine("$ ")
+                    appendLine("[error] shell start failed: ${e.message}")
+                }
+            }
+        }
+    }
+
+    private fun restartShellSession() {
+        ioExecutor.execute {
+            try {
+                shellWriter?.apply {
+                    write("exit\n")
+                    flush()
+                }
+            } catch (_: Exception) {
+            }
+
+            try {
+                shellProcess?.destroy()
+            } catch (_: Exception) {
+            }
+
+            shellWriter = null
+            shellProcess = null
+
+            runOnUiThread {
+                appendLine("[session] restarting...")
+            }
+
+            startShellSession()
+        }
+    }
+
+    private fun sendToShell(command: String) {
+        appendLine("$ $command")
+        ioExecutor.execute {
+            try {
+                val writer = shellWriter
+                if (writer == null) {
+                    runOnUiThread {
+                        appendLine("[warn] shell not ready")
+                        appendPrompt()
+                    }
+                    return@execute
+                }
+
+                writer.write(command)
+                writer.newLine()
+                writer.flush()
+
+                runOnUiThread { appendPrompt() }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    appendLine("[error] send failed: ${e.message}")
+                    appendPrompt()
                 }
             }
         }
@@ -79,7 +150,26 @@ class MainActivity : AppCompatActivity() {
         outputScroll.post { outputScroll.fullScroll(ScrollView.FOCUS_DOWN) }
     }
 
+    private fun appendPrompt() {
+        outputText.append("\n$ ")
+        outputScroll.post { outputScroll.fullScroll(ScrollView.FOCUS_DOWN) }
+    }
+
     override fun onDestroy() {
+        try {
+            shellWriter?.apply {
+                write("exit\n")
+                flush()
+                close()
+            }
+        } catch (_: Exception) {
+        }
+
+        try {
+            shellProcess?.destroy()
+        } catch (_: Exception) {
+        }
+
         ioExecutor.shutdownNow()
         super.onDestroy()
     }

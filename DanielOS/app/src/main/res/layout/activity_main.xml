@@ -29,7 +29,7 @@
             android:textColor="#C9F9D4"
             android:textSize="13sp"
             android:typeface="monospace"
-            android:text="DanielOS v0.2\n$ " />
+            android:text="DanielOS v0.3 (interactive shell)" />
     </ScrollView>
 
     <LinearLayout
@@ -50,7 +50,7 @@
             android:id="@+id/runButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="실행"
+            android:text="전송"
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
@@ -61,11 +61,19 @@
         android:layout_marginTop="8dp">
 
         <Button
+            android:id="@+id/restartButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="세션재시작" />
+
+        <Button
             android:id="@+id/clearButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="화면지우기" />
+            android:text="화면지우기"
+            android:layout_marginStart="8dp" />
 
         <Button
             android:id="@+id/helpButton"
