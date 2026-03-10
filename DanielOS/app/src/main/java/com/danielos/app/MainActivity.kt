@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val commandHistory = ArrayList<String>()
+    private var historyCursor = -1
 
     companion object {
         private const val KEY_CONSOLE_LOG = "console_log"
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
-            outputText.text = "DanielOS v0.5 (interactive shell + persisted log/history)"
+            outputText.text = "DanielOS v0.6 (interactive shell + controls/history)"
             appendPrompt()
             persistUiState()
         }
@@ -71,9 +72,21 @@ class MainActivity : AppCompatActivity() {
             restartShellSession()
         }
 
+        findViewById<Button>(R.id.interruptButton).setOnClickListener {
+            interruptCurrentSession()
+        }
+
+        findViewById<Button>(R.id.prevHistoryButton).setOnClickListener {
+            browseHistory(previous = true)
+        }
+
+        findViewById<Button>(R.id.nextHistoryButton).setOnClickListener {
+            browseHistory(previous = false)
+        }
+
         findViewById<Button>(R.id.helpButton).setOnClickListener {
             appendLine("사용 예시: pwd, ls, uname -a, whoami")
-            appendLine("v0.5: 로그 복구 + 최근 명령 히스토리 + 로그 파일 저장")
+            appendLine("v0.6: 중단/이전명령/다음명령 컨트롤 추가")
             appendPrompt()
         }
 
@@ -121,13 +134,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun restartShellSession() {
         ioExecutor.execute {
-            try {
-                shellWriter?.apply {
-                    write("exit\n")
-                    flush()
-                }
-            } catch (_: Exception) {
-            }
+            gracefulExitShell()
 
             try {
                 shellProcess?.destroy()
@@ -143,6 +150,54 @@ class MainActivity : AppCompatActivity() {
 
             startShellSession()
         }
+    }
+
+    private fun interruptCurrentSession() {
+        ioExecutor.execute {
+            try {
+                // MVP interrupt: 강제 종료 후 새 세션 시작
+                shellProcess?.destroy()
+                shellWriter = null
+                shellProcess = null
+                runOnUiThread {
+                    appendLine("[session] interrupted")
+                }
+                startShellSession()
+            } catch (e: Exception) {
+                runOnUiThread {
+                    appendLine("[error] interrupt failed: ${e.message}")
+                }
+            }
+        }
+    }
+
+    private fun gracefulExitShell() {
+        try {
+            shellWriter?.apply {
+                write("exit\n")
+                flush()
+            }
+        } catch (_: Exception) {
+        }
+    }
+
+    private fun browseHistory(previous: Boolean) {
+        if (commandHistory.isEmpty()) return
+
+        if (previous) {
+            if (historyCursor < commandHistory.lastIndex) historyCursor++
+        } else {
+            if (historyCursor >= 0) historyCursor--
+        }
+
+        val value = if (historyCursor in commandHistory.indices) {
+            commandHistory[historyCursor]
+        } else {
+            ""
+        }
+
+        inputCommand.setText(value)
+        inputCommand.setSelection(value.length)
     }
 
     private fun sendToShell(command: String) {
@@ -191,6 +246,7 @@ class MainActivity : AppCompatActivity() {
         if (commandHistory.size > MAX_HISTORY) {
             commandHistory.removeAt(commandHistory.lastIndex)
         }
+        historyCursor = -1
         persistUiState()
     }
 
@@ -227,7 +283,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         outputText.text = if (savedLog.isNullOrBlank()) {
-            "DanielOS v0.5 (interactive shell + persisted log/history)"
+            "DanielOS v0.6 (interactive shell + controls/history)"
         } else {
             savedLog
         }
@@ -252,12 +308,10 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         persistUiState()
 
+        gracefulExitShell()
+
         try {
-            shellWriter?.apply {
-                write("exit\n")
-                flush()
-                close()
-            }
+            shellWriter?.close()
         } catch (_: Exception) {
         }
 
