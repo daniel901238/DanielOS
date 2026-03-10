@@ -9,8 +9,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.io.BufferedReader
 import java.io.BufferedWriter
+import java.io.File
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -29,10 +33,14 @@ class MainActivity : AppCompatActivity() {
         getSharedPreferences("danielos_terminal", Context.MODE_PRIVATE)
     }
 
+    private val commandHistory = ArrayList<String>()
+
     companion object {
         private const val KEY_CONSOLE_LOG = "console_log"
         private const val KEY_DRAFT_COMMAND = "draft_command"
+        private const val KEY_HISTORY = "command_history"
         private const val MAX_LOG_CHARS = 40_000
+        private const val MAX_HISTORY = 30
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,12 +56,13 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.runButton).setOnClickListener {
             val cmd = inputCommand.text.toString().trim()
             if (cmd.isBlank()) return@setOnClickListener
+            pushHistory(cmd)
             inputCommand.setText("")
             sendToShell(cmd)
         }
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
-            outputText.text = "DanielOS v0.4 (interactive shell + persisted log)"
+            outputText.text = "DanielOS v0.5 (interactive shell + persisted log/history)"
             appendPrompt()
             persistUiState()
         }
@@ -64,8 +73,12 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.helpButton).setOnClickListener {
             appendLine("사용 예시: pwd, ls, uname -a, whoami")
-            appendLine("v0.4: 터미널 로그/입력창 상태를 자동 복구합니다.")
+            appendLine("v0.5: 로그 복구 + 최근 명령 히스토리 + 로그 파일 저장")
             appendPrompt()
+        }
+
+        findViewById<Button>(R.id.exportLogButton).setOnClickListener {
+            exportLogToFile()
         }
 
         startShellSession()
@@ -159,6 +172,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun exportLogToFile() {
+        try {
+            val now = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+            val outFile = File(filesDir, "terminal-log-$now.txt")
+            outFile.writeText(outputText.text?.toString() ?: "")
+            appendLine("[log] saved: ${outFile.absolutePath}")
+            appendPrompt()
+        } catch (e: Exception) {
+            appendLine("[error] log save failed: ${e.message}")
+            appendPrompt()
+        }
+    }
+
+    private fun pushHistory(cmd: String) {
+        commandHistory.remove(cmd)
+        commandHistory.add(0, cmd)
+        if (commandHistory.size > MAX_HISTORY) {
+            commandHistory.removeAt(commandHistory.lastIndex)
+        }
+        persistUiState()
+    }
+
     private fun appendLine(text: String) {
         outputText.append("\n$text")
         trimLogIfNeeded()
@@ -184,9 +219,15 @@ class MainActivity : AppCompatActivity() {
     private fun restoreUiState() {
         val savedLog = prefs.getString(KEY_CONSOLE_LOG, null)
         val savedDraft = prefs.getString(KEY_DRAFT_COMMAND, "") ?: ""
+        val savedHistoryRaw = prefs.getString(KEY_HISTORY, "") ?: ""
+
+        commandHistory.clear()
+        if (savedHistoryRaw.isNotBlank()) {
+            commandHistory.addAll(savedHistoryRaw.split("\n").filter { it.isNotBlank() }.take(MAX_HISTORY))
+        }
 
         outputText.text = if (savedLog.isNullOrBlank()) {
-            "DanielOS v0.4 (interactive shell + persisted log)"
+            "DanielOS v0.5 (interactive shell + persisted log/history)"
         } else {
             savedLog
         }
@@ -199,6 +240,7 @@ class MainActivity : AppCompatActivity() {
         prefs.edit()
             .putString(KEY_CONSOLE_LOG, outputText.text?.toString() ?: "")
             .putString(KEY_DRAFT_COMMAND, inputCommand.text?.toString() ?: "")
+            .putString(KEY_HISTORY, commandHistory.joinToString("\n"))
             .apply()
     }
 
