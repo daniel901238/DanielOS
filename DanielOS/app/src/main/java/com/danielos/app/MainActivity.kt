@@ -1,7 +1,10 @@
 package com.danielos.app
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ScrollView
@@ -55,15 +58,20 @@ class MainActivity : AppCompatActivity() {
         restoreUiState()
 
         findViewById<Button>(R.id.runButton).setOnClickListener {
-            val cmd = inputCommand.text.toString().trim()
-            if (cmd.isBlank()) return@setOnClickListener
-            pushHistory(cmd)
-            inputCommand.setText("")
-            sendToShell(cmd)
+            submitCurrentCommand()
+        }
+
+        inputCommand.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
+                submitCurrentCommand()
+                true
+            } else {
+                false
+            }
         }
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
-            outputText.text = "DanielOS v0.6 (interactive shell + controls/history)"
+            outputText.text = "DanielOS v0.7 (interactive shell + UX)"
             appendPrompt()
             persistUiState()
         }
@@ -86,7 +94,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.helpButton).setOnClickListener {
             appendLine("사용 예시: pwd, ls, uname -a, whoami")
-            appendLine("v0.6: 중단/이전명령/다음명령 컨트롤 추가")
+            appendLine("v0.7: 엔터 전송/로그복사/입력 UX 개선")
             appendPrompt()
         }
 
@@ -94,7 +102,32 @@ class MainActivity : AppCompatActivity() {
             exportLogToFile()
         }
 
+        findViewById<Button>(R.id.copyLogButton).setOnClickListener {
+            copyLogToClipboard()
+        }
+
         startShellSession()
+    }
+
+    private fun submitCurrentCommand() {
+        val cmd = inputCommand.text.toString().trim()
+        if (cmd.isBlank()) return
+        pushHistory(cmd)
+        inputCommand.setText("")
+        sendToShell(cmd)
+    }
+
+    private fun copyLogToClipboard() {
+        try {
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val text = outputText.text?.toString() ?: ""
+            clipboard.setPrimaryClip(ClipData.newPlainText("DanielOS Log", text))
+            appendLine("[log] copied to clipboard")
+            appendPrompt()
+        } catch (e: Exception) {
+            appendLine("[error] copy failed: ${e.message}")
+            appendPrompt()
+        }
     }
 
     private fun startShellSession() {
@@ -283,7 +316,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         outputText.text = if (savedLog.isNullOrBlank()) {
-            "DanielOS v0.6 (interactive shell + controls/history)"
+            "DanielOS v0.7 (interactive shell + UX)"
         } else {
             savedLog
         }
