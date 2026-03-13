@@ -10,11 +10,7 @@ import android.widget.EditText
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import java.io.BufferedReader
-import java.io.BufferedWriter
 import java.io.File
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -28,9 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private val ioExecutor: ExecutorService = Executors.newSingleThreadExecutor()
 
-    @Volatile
-    private var shellProcess: Process? = null
-    private var shellWriter: BufferedWriter? = null
+    private lateinit var shellSession: ShellSession
 
     private val prefs by lazy {
         getSharedPreferences("danielos_terminal", Context.MODE_PRIVATE)
@@ -56,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         inputCommand = findViewById(R.id.inputCommand)
 
         restoreUiState()
+        shellSession = LocalShellSession(ioExecutor)
 
         findViewById<Button>(R.id.runButton).setOnClickListener {
             submitCurrentCommand()
@@ -71,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
-            outputText.text = "DanielOS v0.7 (interactive shell + UX)"
+            outputText.text = "DanielOS v0.8 (session abstraction + sanitized output)"
             appendPrompt()
             persistUiState()
         }
@@ -94,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.helpButton).setOnClickListener {
             appendLine("사용 예시: pwd, ls, uname -a, whoami")
-            appendLine("v0.7: 엔터 전송/로그복사/입력 UX 개선")
+            appendLine("v0.8: 세션 레이어 분리 + ANSI 출력 정리")
             appendPrompt()
         }
 
@@ -131,87 +126,39 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startShellSession() {
-        ioExecutor.execute {
-            try {
-                val proc = ProcessBuilder("sh")
-                    .redirectErrorStream(true)
-                    .start()
-
-                shellProcess = proc
-                shellWriter = BufferedWriter(OutputStreamWriter(proc.outputStream))
-
+        shellSession.start(
+            onLine = { line ->
                 runOnUiThread {
-                    appendLine("[session] shell started")
-                    appendPrompt()
+                    appendLine(line)
+                    if (line.contains("[session] shell started")) appendPrompt()
                 }
-
-                BufferedReader(InputStreamReader(proc.inputStream)).use { reader ->
-                    var line: String?
-                    while (reader.readLine().also { line = it } != null) {
-                        val safeLine = line ?: continue
-                        runOnUiThread { appendLine(safeLine) }
-                    }
-                }
-
-                val code = proc.waitFor()
-                runOnUiThread {
-                    appendLine("[session] shell exited (code=$code)")
-                }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    appendLine("[error] shell start failed: ${e.message}")
-                }
+            },
+            onExit = { code ->
+                runOnUiThread { appendLine("[session] shell exited (code=$code)") }
+            },
+            onError = { message ->
+                runOnUiThread { appendLine("[error] shell start failed: $message") }
             }
-        }
+        )
     }
 
     private fun restartShellSession() {
         ioExecutor.execute {
-            gracefulExitShell()
-
-            try {
-                shellProcess?.destroy()
-            } catch (_: Exception) {
-            }
-
-            shellWriter = null
-            shellProcess = null
-
-            runOnUiThread {
-                appendLine("[session] restarting...")
-            }
-
+            shellSession.stop()
+            runOnUiThread { appendLine("[session] restarting...") }
             startShellSession()
         }
     }
 
     private fun interruptCurrentSession() {
-        ioExecutor.execute {
-            try {
-                // MVP interrupt: 강제 종료 후 새 세션 시작
-                shellProcess?.destroy()
-                shellWriter = null
-                shellProcess = null
-                runOnUiThread {
-                    appendLine("[session] interrupted")
-                }
+        shellSession.interrupt()
+            .onSuccess {
+                appendLine("[session] interrupted")
                 startShellSession()
-            } catch (e: Exception) {
-                runOnUiThread {
-                    appendLine("[error] interrupt failed: ${e.message}")
-                }
             }
-        }
-    }
-
-    private fun gracefulExitShell() {
-        try {
-            shellWriter?.apply {
-                write("exit\n")
-                flush()
+            .onFailure { e ->
+                appendLine("[error] interrupt failed: ${e.message}")
             }
-        } catch (_: Exception) {
-        }
     }
 
     private fun browseHistory(previous: Boolean) {
@@ -235,29 +182,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendToShell(command: String) {
         appendLine("$ $command")
-        ioExecutor.execute {
-            try {
-                val writer = shellWriter
-                if (writer == null) {
-                    runOnUiThread {
-                        appendLine("[warn] shell not ready")
-                        appendPrompt()
-                    }
-                    return@execute
-                }
-
-                writer.write(command)
-                writer.newLine()
-                writer.flush()
-
-                runOnUiThread { appendPrompt() }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    appendLine("[error] send failed: ${e.message}")
-                    appendPrompt()
-                }
+        shellSession.send(command)
+            .onSuccess { appendPrompt() }
+            .onFailure { e ->
+                appendLine("[error] send failed: ${e.message}")
+                appendPrompt()
             }
-        }
     }
 
     private fun exportLogToFile() {
@@ -316,7 +246,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         outputText.text = if (savedLog.isNullOrBlank()) {
-            "DanielOS v0.7 (interactive shell + UX)"
+            "DanielOS v0.8 (session abstraction + sanitized output)"
         } else {
             savedLog
         }
@@ -340,19 +270,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         persistUiState()
-
-        gracefulExitShell()
-
-        try {
-            shellWriter?.close()
-        } catch (_: Exception) {
-        }
-
-        try {
-            shellProcess?.destroy()
-        } catch (_: Exception) {
-        }
-
+        shellSession.stop()
         ioExecutor.shutdownNow()
         super.onDestroy()
     }
