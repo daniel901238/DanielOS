@@ -50,7 +50,8 @@ class MainActivity : AppCompatActivity() {
         inputCommand = findViewById(R.id.inputCommand)
 
         restoreUiState()
-        shellSession = LocalShellSession(ioExecutor)
+        // v0.9: PTY 세션 우선 시도(현재는 내부적으로 LocalShellSession 폴백)
+        shellSession = PtyShellSession(ioExecutor)
 
         findViewById<Button>(R.id.runButton).setOnClickListener {
             submitCurrentCommand()
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
-            outputText.text = "DanielOS v0.8 (session abstraction + sanitized output)"
+            outputText.text = "DanielOS v0.9 (pty-ready scaffold + fallback)"
             appendPrompt()
             persistUiState()
         }
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.helpButton).setOnClickListener {
             appendLine("사용 예시: pwd, ls, uname -a, whoami")
-            appendLine("v0.8: 세션 레이어 분리 + ANSI 출력 정리")
+            appendLine("v0.9: PTY 브리지 스켈레톤 + 자동 폴백")
             appendPrompt()
         }
 
@@ -246,7 +247,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         outputText.text = if (savedLog.isNullOrBlank()) {
-            "DanielOS v0.8 (session abstraction + sanitized output)"
+            "DanielOS v0.9 (pty-ready scaffold + fallback)"
         } else {
             savedLog
         }
