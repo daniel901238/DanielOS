@@ -6,8 +6,8 @@
 
 ## Required real values
 - Support email: daniel901238@gmail.com
-- Privacy URL: https://danielos.app/privacy
-- Website: https://danielos.app
+- Privacy URL: https://danielos-temp.github.io/privacy
+- Website: https://danielos-temp.github.io
 - Company/Publisher name: DanielOS
 
 ## Notes

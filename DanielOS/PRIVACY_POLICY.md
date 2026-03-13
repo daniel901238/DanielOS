@@ -39,7 +39,7 @@ DanielOS is not specifically directed to children.
 ## 7) Contact
 For privacy questions, contact:
 - Email: daniel901238@gmail.com
-- Website: https://danielos.app/privacy
+- Website: https://danielos-temp.github.io/privacy
 
 ---
 

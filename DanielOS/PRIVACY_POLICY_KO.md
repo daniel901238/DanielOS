@@ -38,4 +38,4 @@ DanielOS는 아동을 주요 대상으로 설계되지 않았습니다.
 
 ## 7. 문의처
 - 이메일: daniel901238@gmail.com
-- 개인정보처리방침 URL: https://danielos.app/privacy
+- 개인정보처리방침 URL: https://danielos-temp.github.io/privacy

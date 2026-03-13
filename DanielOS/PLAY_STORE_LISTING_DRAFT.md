@@ -26,8 +26,8 @@ Important note:
 
 ## Contact (for Play Console)
 - Support email: daniel901238@gmail.com
-- Privacy Policy URL: https://danielos.app/privacy
-- Developer website: https://danielos.app
+- Privacy Policy URL: https://danielos-temp.github.io/privacy
+- Developer website: https://danielos-temp.github.io
 
 ## Release checklist (Play)
 - [ ] Upload app icon/screenshots
