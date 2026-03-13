@@ -1,30 +1,37 @@
-# DanielOS Play 스토어 등록 문구 (초안)
+# DanielOS - Google Play Listing (Ready Draft)
 
-## 앱 이름
+## App name
 DanielOS
 
-## 짧은 설명 (80자 이내)
-안드로이드용 개발 터미널 앱. 로컬 셸 실행, 세션 관리, 로그 저장 지원.
+## Short description (<= 80 chars)
+Android developer terminal with local shell, session control, and log tools.
 
-## 전체 설명
-DanielOS는 개발자를 위한 안드로이드 터미널 앱입니다.
+## Full description
+DanielOS is an Android terminal app built for developer workflows.
 
-주요 기능:
-- 로컬 셸 실행 및 인터랙티브 세션 유지
-- 명령어 히스토리 탐색(이전/다음)
-- 세션 재시작/중단
-- 로그 저장 및 클립보드 복사
-- 앱 재실행 시 로그/입력 상태 복구
+Key features:
+- Interactive local shell session
+- Command history navigation (prev/next)
+- Session restart and interrupt controls
+- Log export and clipboard copy
+- Restore log and draft input after app restart
 
-개인정보/보안:
-- 기본적으로 터미널 데이터는 기기 내 로컬 저장
-- 사용자 동작 없이 외부로 자동 전송하지 않음
+Privacy and security:
+- Local-first data handling
+- No automatic background upload of terminal data by default
+- User-triggered network operations only
 
-안내:
-- DanielOS는 독립 개발 프로젝트이며, 특정 타 앱의 공식 후속/배포판이 아닙니다.
+Important note:
+- DanielOS is an independent project and is not an official distribution, fork branding, or successor claim of any other terminal app.
 
-## 출시 전 체크
-- 개인정보처리방침 URL 연결
-- 스크린샷/아이콘 업로드
-- Data Safety 항목 작성
-- 지원 이메일/웹사이트 기입
+## Contact (for Play Console)
+- Support email: support@danielos.app
+- Privacy Policy URL: https://danielos.app/privacy
+- Developer website: https://danielos.app
+
+## Release checklist (Play)
+- [ ] Upload app icon/screenshots
+- [ ] Fill Data Safety form to match real behavior
+- [ ] Set content rating
+- [ ] Set target countries/pricing
+- [ ] Verify privacy policy URL is live

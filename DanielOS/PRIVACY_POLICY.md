@@ -1,48 +1,50 @@
-# DanielOS 개인정보처리방침 (초안)
+# DanielOS Privacy Policy
 
-최종 업데이트: 2026-03-13
+Last updated: 2026-03-13
 
-DanielOS(이하 "앱")는 사용자 프라이버시 보호를 중요하게 생각합니다.
+DanielOS ("the App") is a terminal app for Android. We prioritize user privacy and local-first data handling.
 
-## 1. 수집하는 정보
-기본적으로 앱은 다음 정보를 서버로 전송하지 않습니다.
-- 터미널 입력/출력 로그
-- 명령어 히스토리
-- 앱 내부 설정
+## 1) What data we collect
+By default, DanielOS does **not** collect personal data on a remote server.
 
-위 데이터는 기본적으로 기기 내부 저장소(앱 샌드박스)에만 저장됩니다.
+Data stored locally on your device (app sandbox):
+- terminal output log
+- command history
+- draft input text
+- app preferences
 
-## 2. 데이터 사용 목적
-앱은 다음 목적을 위해 로컬 데이터를 사용합니다.
-- 터미널 세션 표시
-- 입력창 draft 복구
-- 명령 히스토리 탐색
-- 로그 파일 내보내기
+## 2) Why data is used
+Local data is used only to provide app features:
+- terminal session display
+- restore previous state
+- command history navigation
+- log export/copy actions
 
-## 3. 외부 전송/공유
-앱은 기본적으로 사용자 데이터를 외부 서버로 전송하거나 제3자와 공유하지 않습니다.
+## 3) Data sharing and transfer
+DanielOS does not share user data with third parties by default.
 
-단, 사용자가 명시적으로 네트워크 기능(예: SSH, 외부 API 연동)을 사용하는 경우,
-해당 통신은 사용자의 직접 동작에 따라 발생합니다.
+If you explicitly use network features (for example SSH or external API calls),
+network traffic occurs only as a result of your direct action.
 
-## 4. 보관 및 삭제
-- 데이터는 앱이 설치된 기기 내에 저장됩니다.
-- 사용자는 앱 삭제 또는 앱 데이터 삭제를 통해 모든 로컬 데이터를 제거할 수 있습니다.
+## 4) Data retention and deletion
+- App data is stored locally on your device.
+- You can delete all data by clearing app storage or uninstalling the app.
 
-## 5. 보안
-앱은 민감정보 하드코딩을 피하고, 로컬 저장을 기본으로 하며,
-릴리즈 전 보안 점검을 수행하는 것을 목표로 합니다.
+## 5) Security
+We aim to follow secure development practices, including minimizing embedded secrets and reviewing release builds before distribution.
 
-## 6. 아동 개인정보
-앱은 아동을 대상으로 설계되지 않았습니다.
+## 6) Children
+DanielOS is not specifically directed to children.
 
-## 7. 문의
-정책 관련 문의 채널(이메일/웹페이지)은 앱 출시 전 개발자가 지정합니다.
+## 7) Contact
+For privacy questions, contact:
+- Email: support@danielos.app
+- Website: https://danielos.app/privacy
 
 ---
 
-## Play Console 등록용 요약 문구(초안)
-- 데이터 수집: 기본적으로 수집하지 않음
-- 데이터 공유: 공유하지 않음
-- 데이터 암호화: 네트워크 기능 사용 시 전송 구간 보호(해당 기능 구현 시)
-- 데이터 삭제: 앱 삭제/데이터 삭제로 가능
+## Google Play Data Safety (draft guidance)
+- Data collection: No (by default)
+- Data sharing: No (by default)
+- User control: App data can be deleted via uninstall/clear data
+- Encryption in transit: Applies when users invoke network features
