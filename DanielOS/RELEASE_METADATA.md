@@ -5,7 +5,7 @@
 - Version Code: 1
 
 ## Required real values
-- Support email: support@danielos.app
+- Support email: daniel901238@gmail.com
 - Privacy URL: https://danielos.app/privacy
 - Website: https://danielos.app
 - Company/Publisher name: DanielOS

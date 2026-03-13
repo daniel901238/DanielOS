@@ -37,5 +37,5 @@ DanielOS는 기본적으로 원격 서버에 개인정보를 수집하지 않습
 DanielOS는 아동을 주요 대상으로 설계되지 않았습니다.
 
 ## 7. 문의처
-- 이메일: support@danielos.app
+- 이메일: daniel901238@gmail.com
 - 개인정보처리방침 URL: https://danielos.app/privacy

@@ -25,7 +25,7 @@ Important note:
 - DanielOS is an independent project and is not an official distribution, fork branding, or successor claim of any other terminal app.
 
 ## Contact (for Play Console)
-- Support email: support@danielos.app
+- Support email: daniel901238@gmail.com
 - Privacy Policy URL: https://danielos.app/privacy
 - Developer website: https://danielos.app
 

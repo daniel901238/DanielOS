@@ -1,7 +1,7 @@
 # DanielOS 출시 최종 체크리스트
 
 ## 필수 교체 항목
-- [ ] support@danielos.app -> 실제 운영 이메일
+- [ ] daniel901238@gmail.com -> 실제 운영 이메일
 - [ ] danielos.app 도메인/URL -> 실제 운영 주소
 
 ## 법무/정책

@@ -25,6 +25,6 @@ DanielOS는 개발 워크플로우를 위한 안드로이드 터미널 앱입니
 - DanielOS는 독립 프로젝트이며, 특정 타 앱의 공식 배포판/후속판을 주장하지 않습니다.
 
 ## 등록 정보
-- 지원 이메일: support@danielos.app
+- 지원 이메일: daniel901238@gmail.com
 - 개인정보처리방침 URL: https://danielos.app/privacy
 - 개발자 웹사이트: https://danielos.app
