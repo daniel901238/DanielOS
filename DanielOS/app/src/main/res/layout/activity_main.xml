@@ -19,8 +19,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:fillViewport="true"
         android:background="#101316"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:scrollbarStyle="outsideInset">
 
         <TextView
             android:id="@+id/outputText"
@@ -29,7 +31,7 @@
             android:textColor="#C9F9D4"
             android:textSize="13sp"
             android:typeface="monospace"
-            android:text="DanielOS v0.3 (interactive shell)" />
+            android:text="DanielOS" />
     </ScrollView>
 
     <LinearLayout
@@ -44,90 +46,117 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="명령어 입력 (예: ls)"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:imeOptions="actionGo" />
 
         <Button
             android:id="@+id/runButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="전송"
-            android:layout_marginStart="8dp" />
+            android:text="실행"
+            android:layout_marginStart="8dp"
+            android:minWidth="72dp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_marginTop="8dp">
 
-        <Button
-            android:id="@+id/restartButton"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="세션재시작" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/interruptButton"
-            android:layout_width="0dp"
+            <Button
+                android:id="@+id/restartButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="재시작"
+                android:maxLines="1" />
+
+            <Button
+                android:id="@+id/interruptButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="중단"
+                android:layout_marginStart="8dp"
+                android:maxLines="1" />
+
+            <Button
+                android:id="@+id/clearButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="지우기"
+                android:layout_marginStart="8dp"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="중단"
-            android:layout_marginStart="8dp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
-        <Button
-            android:id="@+id/clearButton"
-            android:layout_width="0dp"
+            <Button
+                android:id="@+id/prevHistoryButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="이전"
+                android:maxLines="1" />
+
+            <Button
+                android:id="@+id/nextHistoryButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="다음"
+                android:layout_marginStart="8dp"
+                android:maxLines="1" />
+
+            <Button
+                android:id="@+id/helpButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="도움말"
+                android:layout_marginStart="8dp"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="화면지우기"
-            android:layout_marginStart="8dp" />
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+            <Button
+                android:id="@+id/exportLogButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="저장"
+                android:maxLines="1" />
 
-        <Button
-            android:id="@+id/prevHistoryButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="이전명령" />
+            <Button
+                android:id="@+id/copyLogButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="복사"
+                android:layout_marginStart="8dp"
+                android:maxLines="1" />
 
-        <Button
-            android:id="@+id/nextHistoryButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="다음명령"
-            android:layout_marginStart="8dp" />
-
-        <Button
-            android:id="@+id/helpButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="도움말"
-            android:layout_marginStart="8dp" />
-
-        <Button
-            android:id="@+id/exportLogButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="로그저장"
-            android:layout_marginStart="8dp" />
-
-        <Button
-            android:id="@+id/copyLogButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="로그복사"
-            android:layout_marginStart="8dp" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
