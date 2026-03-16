@@ -32,6 +32,12 @@ class LocalShellSession(
                 writer = BufferedWriter(OutputStreamWriter(proc.outputStream))
                 onLine("[session] shell started")
 
+                // Try Termux-style home first, then shell HOME fallback.
+                writer?.apply {
+                    write("if [ -d /data/data/com.termux/files/home ]; then cd /data/data/com.termux/files/home; elif [ -d \$HOME ]; then cd \$HOME; fi; pwd\n")
+                    flush()
+                }
+
                 BufferedReader(InputStreamReader(proc.inputStream)).use { reader ->
                     var line: String?
                     while (reader.readLine().also { line = it } != null) {
