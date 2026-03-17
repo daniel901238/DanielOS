@@ -17,7 +17,7 @@ interface ShellSession {
 class LocalShellSession(
     private val executor: ExecutorService,
     private val shellCommand: String = "sh",
-    private val defaultHome: String = "/data/data/com.termux/files/home"
+    private val defaultHome: String
 ) : ShellSession {
     @Volatile
     private var process: Process? = null

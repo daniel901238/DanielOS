@@ -9,10 +9,11 @@ import java.util.concurrent.ExecutorService
  * 차후 JNI/PTMX 연결 시 이 클래스를 실제 PTY 구현으로 교체한다.
  */
 class PtyShellSession(
-    private val executor: ExecutorService
+    private val executor: ExecutorService,
+    private val defaultHome: String
 ) : ShellSession {
 
-    private val fallback = LocalShellSession(executor)
+    private val fallback = LocalShellSession(executor, defaultHome = defaultHome)
 
     override fun start(onLine: (String) -> Unit, onExit: (Int) -> Unit, onError: (String) -> Unit) {
         if (!NativePtyBridge.isSupported()) {

@@ -50,8 +50,9 @@ class MainActivity : AppCompatActivity() {
         inputCommand = findViewById(R.id.inputCommand)
 
         restoreUiState()
-        // v0.9: PTY 세션 우선 시도(현재는 내부적으로 LocalShellSession 폴백)
-        shellSession = PtyShellSession(ioExecutor)
+        // App sandbox path (accessible) instead of Termux private path.
+        val appHome = filesDir.absolutePath
+        shellSession = PtyShellSession(ioExecutor, appHome)
 
         findViewById<Button>(R.id.runButton).setOnClickListener {
             submitCurrentCommand()
