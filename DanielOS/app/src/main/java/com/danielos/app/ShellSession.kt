@@ -4,6 +4,7 @@ import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
+import java.io.File
 import java.util.concurrent.ExecutorService
 
 interface ShellSession {
@@ -15,7 +16,8 @@ interface ShellSession {
 
 class LocalShellSession(
     private val executor: ExecutorService,
-    private val shellCommand: String = "sh"
+    private val shellCommand: String = "sh",
+    private val defaultHome: String = "/data/data/com.termux/files/home"
 ) : ShellSession {
     @Volatile
     private var process: Process? = null
@@ -24,17 +26,28 @@ class LocalShellSession(
     override fun start(onLine: (String) -> Unit, onExit: (Int) -> Unit, onError: (String) -> Unit) {
         executor.execute {
             try {
-                val proc = ProcessBuilder(shellCommand)
+                val pb = ProcessBuilder(shellCommand)
                     .redirectErrorStream(true)
-                    .start()
+
+                // Force a safe default working dir + HOME for Android app sandbox shells.
+                val homeDir = File(defaultHome)
+                if (homeDir.isDirectory) {
+                    pb.directory(homeDir)
+                }
+                val env = pb.environment()
+                env["HOME"] = if (homeDir.isDirectory) defaultHome else (env["HOME"] ?: "/")
+                env["PWD"] = env["HOME"] ?: "/"
+                env["TERM"] = env["TERM"] ?: "xterm-256color"
+
+                val proc = pb.start()
 
                 process = proc
                 writer = BufferedWriter(OutputStreamWriter(proc.outputStream))
                 onLine("[session] shell started")
 
-                // Try Termux-style home first, then shell HOME fallback.
+                // Print current dir so users can verify startup location.
                 writer?.apply {
-                    write("if [ -d /data/data/com.termux/files/home ]; then cd /data/data/com.termux/files/home; elif [ -d \$HOME ]; then cd \$HOME; fi; pwd\n")
+                    write("pwd\n")
                     flush()
                 }
 
