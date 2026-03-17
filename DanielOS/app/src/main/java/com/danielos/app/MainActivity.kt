@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             appendPrompt()
         }
 
-        findViewById<Button>(R.id/exportLogButton).setOnClickListener {
+        findViewById<Button>(R.id.exportLogButton).setOnClickListener {
             exportLogToFile()
         }
 
