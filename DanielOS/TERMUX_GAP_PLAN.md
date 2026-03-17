@@ -31,7 +31,7 @@ DanielOS를 "커스텀 UI" 수준에서 "실사용 가능한 터미널 플랫폼
 3. signed AAB pipeline + Play preflight checks
 
 ## Immediate next implementation (v1.1)
-- session started 전 run button 비활성화
-- queued command 처리
-- command 완료 시 exit code 명시
-- status line 추가(current dir, mode)
+- [x] session started 전 run button 비활성화
+- [x] queued command 처리
+- [x] command 완료 시 exit code 명시
+- [x] status line 추가(current dir, mode)

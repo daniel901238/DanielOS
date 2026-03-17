@@ -21,9 +21,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var outputText: TextView
     private lateinit var outputScroll: ScrollView
     private lateinit var inputCommand: EditText
+    private lateinit var statusText: TextView
+    private lateinit var runButton: Button
 
     private val ioExecutor: ExecutorService = Executors.newSingleThreadExecutor()
-
     private lateinit var shellSession: ShellSession
 
     private val prefs by lazy {
@@ -31,7 +32,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val commandHistory = ArrayList<String>()
+    private val pendingCommands = ArrayList<String>()
     private var historyCursor = -1
+
+    @Volatile
+    private var shellReady = false
+    private var currentDir = "?"
 
     companion object {
         private const val KEY_CONSOLE_LOG = "console_log"
@@ -39,6 +45,8 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_HISTORY = "command_history"
         private const val MAX_LOG_CHARS = 40_000
         private const val MAX_HISTORY = 30
+        private const val MARK_EXIT = "__EXIT__"
+        private const val MARK_PWD = "__PWD__"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,13 +56,16 @@ class MainActivity : AppCompatActivity() {
         outputText = findViewById(R.id.outputText)
         outputScroll = findViewById(R.id.outputScroll)
         inputCommand = findViewById(R.id.inputCommand)
+        statusText = findViewById(R.id.statusText)
+        runButton = findViewById(R.id.runButton)
 
         restoreUiState()
-        // App sandbox path (accessible) instead of Termux private path.
+        setShellReady(false)
+
         val appHome = filesDir.absolutePath
         shellSession = PtyShellSession(ioExecutor, appHome)
 
-        findViewById<Button>(R.id.runButton).setOnClickListener {
+        runButton.setOnClickListener {
             submitCurrentCommand()
         }
 
@@ -68,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
-            outputText.text = "DanielOS v0.9 (pty-ready scaffold + fallback)"
+            outputText.text = "DanielOS v1.1 (ready-gated shell + queue)"
             appendPrompt()
             persistUiState()
         }
@@ -90,12 +101,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.helpButton).setOnClickListener {
-            appendLine("사용 예시: pwd, ls, uname -a, whoami")
-            appendLine("v0.9: PTY 브리지 스켈레톤 + 자동 폴백")
+            appendLine("사용 예시: pwd, ls -al, uname -a, whoami")
+            appendLine("v1.1: shell 준비 전 전송 큐잉 + 종료코드/현재경로 표시")
             appendPrompt()
         }
 
-        findViewById<Button>(R.id.exportLogButton).setOnClickListener {
+        findViewById<Button>(R.id/exportLogButton).setOnClickListener {
             exportLogToFile()
         }
 
@@ -106,12 +117,41 @@ class MainActivity : AppCompatActivity() {
         startShellSession()
     }
 
+    private fun setShellReady(ready: Boolean) {
+        shellReady = ready
+        runButton.isEnabled = ready
+        val state = if (ready) "ready" else "starting"
+        statusText.text = "mode=local-fallback | shell=$state | cwd=$currentDir"
+    }
+
+    private fun updateCurrentDir(path: String) {
+        currentDir = path
+        val state = if (shellReady) "ready" else "starting"
+        statusText.text = "mode=local-fallback | shell=$state | cwd=$currentDir"
+    }
+
     private fun submitCurrentCommand() {
         val cmd = inputCommand.text.toString().trim()
         if (cmd.isBlank()) return
         pushHistory(cmd)
         inputCommand.setText("")
+
+        if (!shellReady) {
+            pendingCommands.add(cmd)
+            appendLine("[queue] shell 준비 중이라 대기열에 추가됨: $cmd")
+            appendPrompt()
+            return
+        }
+
         sendToShell(cmd)
+    }
+
+    private fun flushPendingCommands() {
+        if (pendingCommands.isEmpty()) return
+        val queued = pendingCommands.toList()
+        pendingCommands.clear()
+        appendLine("[queue] ${queued.size}개 명령 자동 실행")
+        queued.forEach { sendToShell(it) }
     }
 
     private fun copyLogToClipboard() {
@@ -128,18 +168,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startShellSession() {
+        setShellReady(false)
         shellSession.start(
             onLine = { line ->
                 runOnUiThread {
-                    appendLine(line)
-                    if (line.contains("[session] shell started")) appendPrompt()
+                    when {
+                        line.startsWith(MARK_EXIT) -> {
+                            val code = line.removePrefix(MARK_EXIT)
+                            appendLine("[exit=$code]")
+                        }
+
+                        line.startsWith(MARK_PWD) -> {
+                            updateCurrentDir(line.removePrefix(MARK_PWD))
+                        }
+
+                        else -> appendLine(line)
+                    }
+
+                    if (line.contains("[session] shell started")) {
+                        setShellReady(true)
+                        appendPrompt()
+                        flushPendingCommands()
+                    }
                 }
             },
             onExit = { code ->
-                runOnUiThread { appendLine("[session] shell exited (code=$code)") }
+                runOnUiThread {
+                    setShellReady(false)
+                    appendLine("[session] shell exited (code=$code)")
+                }
             },
             onError = { message ->
-                runOnUiThread { appendLine("[error] shell start failed: $message") }
+                runOnUiThread {
+                    setShellReady(false)
+                    appendLine("[error] shell start failed: $message")
+                }
             }
         )
     }
@@ -147,7 +210,10 @@ class MainActivity : AppCompatActivity() {
     private fun restartShellSession() {
         ioExecutor.execute {
             shellSession.stop()
-            runOnUiThread { appendLine("[session] restarting...") }
+            runOnUiThread {
+                setShellReady(false)
+                appendLine("[session] restarting...")
+            }
             startShellSession()
         }
     }
@@ -156,6 +222,7 @@ class MainActivity : AppCompatActivity() {
         shellSession.interrupt()
             .onSuccess {
                 appendLine("[session] interrupted")
+                setShellReady(false)
                 startShellSession()
             }
             .onFailure { e ->
@@ -184,7 +251,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendToShell(command: String) {
         appendLine("$ $command")
-        shellSession.send(command)
+        val wrapped = "{ $command; _ec=\$?; printf '$MARK_EXIT%s\\n' \"\$_ec\"; printf '$MARK_PWD%s\\n' \"\$PWD\"; }"
+        shellSession.send(wrapped)
             .onSuccess { appendPrompt() }
             .onFailure { e ->
                 appendLine("[error] send failed: ${e.message}")
@@ -248,7 +316,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         outputText.text = if (savedLog.isNullOrBlank()) {
-            "DanielOS v0.9 (pty-ready scaffold + fallback)"
+            "DanielOS v1.1 (ready-gated shell + queue)"
         } else {
             savedLog
         }

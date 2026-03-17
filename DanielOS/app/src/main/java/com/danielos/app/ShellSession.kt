@@ -45,9 +45,9 @@ class LocalShellSession(
                 writer = BufferedWriter(OutputStreamWriter(proc.outputStream))
                 onLine("[session] shell started")
 
-                // Print current dir so users can verify startup location.
+                // Print current dir marker so UI can sync status line.
                 writer?.apply {
-                    write("pwd\n")
+                    write("printf '__PWD__%s\\n' \"\$PWD\"\n")
                     flush()
                 }
 
