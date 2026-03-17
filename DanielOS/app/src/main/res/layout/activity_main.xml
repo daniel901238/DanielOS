@@ -12,7 +12,16 @@
         android:text="DanielOS Terminal"
         android:textStyle="bold"
         android:textSize="18sp"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="4dp" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="mode=local-fallback | shell=starting"
+        android:textSize="11sp"
+        android:textColor="#5C6BC0"
+        android:paddingBottom="6dp" />
 
     <ScrollView
         android:id="@+id/outputScroll"
