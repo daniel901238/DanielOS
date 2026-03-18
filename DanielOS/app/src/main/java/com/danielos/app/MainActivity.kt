@@ -3,7 +3,9 @@ package com.danielos.app
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.os.StatFs
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
@@ -79,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
-            outputText.text = "DanielOS v1.1 (ready-gated shell + queue)"
+            outputText.text = "DanielOS v1.2 (termux-style info + extra keys)"
             appendPrompt()
             persistUiState()
         }
@@ -102,7 +104,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.helpButton).setOnClickListener {
             appendLine("사용 예시: pwd, ls -al, uname -a, whoami")
-            appendLine("v1.1: shell 준비 전 전송 큐잉 + 종료코드/현재경로 표시")
+            appendLine("v1.2: Termux 스타일 정보/프롬프트 + 특수키 바")
             appendPrompt()
         }
 
@@ -114,6 +116,14 @@ class MainActivity : AppCompatActivity() {
             copyLogToClipboard()
         }
 
+        findViewById<Button>(R.id.keyEscButton).setOnClickListener { insertAtCursor("\u001B") }
+        findViewById<Button>(R.id.keyTabButton).setOnClickListener { insertAtCursor("\t") }
+        findViewById<Button>(R.id.keySlashButton).setOnClickListener { insertAtCursor("/") }
+        findViewById<Button>(R.id.keyDashButton).setOnClickListener { insertAtCursor("-") }
+        findViewById<Button>(R.id.keyPipeButton).setOnClickListener { insertAtCursor("|") }
+        findViewById<Button>(R.id.keyTildeButton).setOnClickListener { insertAtCursor("~") }
+
+        printWelcomeBanner()
         startShellSession()
     }
 
@@ -136,6 +146,17 @@ class MainActivity : AppCompatActivity() {
         pushHistory(cmd)
         inputCommand.setText("")
 
+        when (cmd.lowercase(Locale.ROOT)) {
+            "help" -> {
+                printHelp()
+                return
+            }
+            "info" -> {
+                printInfo()
+                return
+            }
+        }
+
         if (!shellReady) {
             pendingCommands.add(cmd)
             appendLine("[queue] shell 준비 중이라 대기열에 추가됨: $cmd")
@@ -152,6 +173,36 @@ class MainActivity : AppCompatActivity() {
         pendingCommands.clear()
         appendLine("[queue] ${queued.size}개 명령 자동 실행")
         queued.forEach { sendToShell(it) }
+    }
+
+    private fun insertAtCursor(text: String) {
+        val start = inputCommand.selectionStart.coerceAtLeast(0)
+        val end = inputCommand.selectionEnd.coerceAtLeast(0)
+        inputCommand.text?.replace(minOf(start, end), maxOf(start, end), text, 0, text.length)
+    }
+
+    private fun printWelcomeBanner() {
+        appendLine("Welcome to DanielOS")
+        appendLine("Type 'help' for shortcuts, 'info' for system summary")
+    }
+
+    private fun printHelp() {
+        appendLine("Commands: pwd, ls -al, uname -a, whoami, cd <dir>")
+        appendLine("Built-ins: help, info")
+        appendPrompt()
+    }
+
+    private fun printInfo() {
+        val stat = StatFs(filesDir.absolutePath)
+        val avail = stat.availableBytes / (1024 * 1024)
+        val total = stat.totalBytes / (1024 * 1024)
+        appendLine("Device: ${Build.MANUFACTURER} ${Build.MODEL}")
+        appendLine("Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})")
+        appendLine("ABI: ${Build.SUPPORTED_ABIS.firstOrNull() ?: "unknown"}")
+        appendLine("AppHome: ${filesDir.absolutePath}")
+        appendLine("Storage(app fs): ${avail}MB free / ${total}MB total")
+        appendLine("Shell: ${if (shellReady) "ready" else "starting"}, cwd=$currentDir")
+        appendPrompt()
     }
 
     private fun copyLogToClipboard() {
@@ -291,7 +342,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun appendPrompt() {
-        outputText.append("\n$ ")
+        val user = "danielos"
+        val shortCwd = currentDir.substringAfterLast('/').ifBlank { "/" }
+        outputText.append("\n$user@android:$shortCwd $ ")
         trimLogIfNeeded()
         persistUiState()
         outputScroll.post { outputScroll.fullScroll(ScrollView.FOCUS_DOWN) }
@@ -316,7 +369,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         outputText.text = if (savedLog.isNullOrBlank()) {
-            "DanielOS v1.1 (ready-gated shell + queue)"
+            "DanielOS v1.2 (termux-style info + extra keys)"
         } else {
             savedLog
         }
