@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.StatFs
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ScrollView
@@ -70,6 +71,10 @@ class MainActivity : AppCompatActivity() {
         runButton.setOnClickListener {
             submitCurrentCommand()
         }
+
+        // Termux-like: tap terminal area to type immediately.
+        outputText.setOnClickListener { focusInputField() }
+        outputScroll.setOnClickListener { focusInputField() }
 
         inputCommand.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
@@ -138,6 +143,13 @@ class MainActivity : AppCompatActivity() {
         currentDir = path
         val state = if (shellReady) "ready" else "starting"
         statusText.text = "mode=local-fallback | shell=$state | cwd=$currentDir"
+    }
+
+    private fun focusInputField() {
+        inputCommand.requestFocus()
+        inputCommand.setSelection(inputCommand.text?.length ?: 0)
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(inputCommand, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun submitCurrentCommand() {
