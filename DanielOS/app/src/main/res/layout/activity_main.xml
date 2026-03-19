@@ -23,49 +23,74 @@
         android:textColor="#5C6BC0"
         android:paddingBottom="6dp" />
 
-    <ScrollView
-        android:id="@+id/outputScroll"
+    <!-- Terminal screen area (output + direct input line) -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true"
+        android:orientation="vertical"
         android:background="#101316"
-        android:padding="10dp"
-        android:scrollbarStyle="outsideInset">
+        android:padding="8dp">
 
-        <TextView
-            android:id="@+id/outputText"
+        <ScrollView
+            android:id="@+id/outputScroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:scrollbarStyle="outsideInset">
+
+            <TextView
+                android:id="@+id/outputText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#C9F9D4"
+                android:textSize="13sp"
+                android:typeface="monospace"
+                android:text="DanielOS" />
+        </ScrollView>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#C9F9D4"
-            android:textSize="13sp"
-            android:typeface="monospace"
-            android:text="DanielOS" />
-    </ScrollView>
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+            <TextView
+                android:id="@+id/promptText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="❯"
+                android:textColor="#9BE7A9"
+                android:textSize="13sp"
+                android:typeface="monospace"
+                android:paddingEnd="6dp" />
 
-        <EditText
-            android:id="@+id/inputCommand"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="명령어 입력 (예: ls -al)"
-            android:singleLine="true"
-            android:imeOptions="actionGo" />
+            <EditText
+                android:id="@+id/inputCommand"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint=""
+                android:singleLine="true"
+                android:imeOptions="actionGo"
+                android:background="@android:color/transparent"
+                android:textColor="#C9F9D4"
+                android:textColorHint="#4CAF50"
+                android:textSize="13sp"
+                android:typeface="monospace"
+                android:padding="0dp" />
 
-        <Button
-            android:id="@+id/runButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="실행"
-            android:textSize="12sp"
-            android:layout_marginStart="8dp"
-            android:minWidth="72dp" />
+            <Button
+                android:id="@+id/runButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="↵"
+                android:textSize="11sp"
+                android:minWidth="56dp"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
