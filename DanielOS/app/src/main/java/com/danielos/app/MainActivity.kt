@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.StatFs
+import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -76,6 +77,12 @@ class MainActivity : AppCompatActivity() {
         outputText.setOnClickListener { focusInputField() }
         outputScroll.setOnClickListener { focusInputField() }
 
+        // Experimental direct-canvas input: hardware keyboard events on terminal area.
+        outputText.setOnKeyListener { _, keyCode, event ->
+            if (event.action != KeyEvent.ACTION_DOWN) return@setOnKeyListener false
+            handleTerminalKeyInput(keyCode, event)
+        }
+
         inputCommand.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
                 submitCurrentCommand()
@@ -143,6 +150,31 @@ class MainActivity : AppCompatActivity() {
         currentDir = path
         val state = if (shellReady) "ready" else "starting"
         statusText.text = "mode=local-fallback | shell=$state | cwd=$currentDir"
+    }
+
+    private fun handleTerminalKeyInput(keyCode: Int, event: KeyEvent): Boolean {
+        when (keyCode) {
+            KeyEvent.KEYCODE_ENTER -> {
+                submitCurrentCommand()
+                return true
+            }
+            KeyEvent.KEYCODE_DEL -> {
+                val txt = inputCommand.text ?: return true
+                val cur = inputCommand.selectionStart.coerceAtLeast(0)
+                if (cur > 0) {
+                    txt.delete(cur - 1, cur)
+                    inputCommand.setSelection(cur - 1)
+                }
+                return true
+            }
+        }
+
+        val unicode = event.unicodeChar
+        if (unicode != 0) {
+            insertAtCursor(unicode.toChar().toString())
+            return true
+        }
+        return false
     }
 
     private fun focusInputField() {
