@@ -35,3 +35,9 @@ DanielOS를 "커스텀 UI" 수준에서 "실사용 가능한 터미널 플랫폼
 - [x] queued command 처리
 - [x] command 완료 시 exit code 명시
 - [x] status line 추가(current dir, mode)
+
+## Next implementation (v1.3 real terminal mode)
+- [x] direct canvas mode 계약/플래그 추가
+- [ ] 출력/입력 단일 터미널 캔버스 전환
+- [ ] 프롬프트 라인 직접 입력 편집
+- [ ] PTY 바인딩 시 direct canvas 우선 연결
