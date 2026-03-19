@@ -130,10 +130,21 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.keyEscButton).setOnClickListener { insertAtCursor("\u001B") }
         findViewById<Button>(R.id.keyTabButton).setOnClickListener { insertAtCursor("\t") }
+        findViewById<Button>(R.id.keyCtrlButton).setOnClickListener { insertAtCursor("^") }
+        findViewById<Button>(R.id.keyAltButton).setOnClickListener { insertAtCursor("ALT+") }
         findViewById<Button>(R.id.keySlashButton).setOnClickListener { insertAtCursor("/") }
         findViewById<Button>(R.id.keyDashButton).setOnClickListener { insertAtCursor("-") }
         findViewById<Button>(R.id.keyPipeButton).setOnClickListener { insertAtCursor("|") }
         findViewById<Button>(R.id.keyTildeButton).setOnClickListener { insertAtCursor("~") }
+
+        findViewById<Button>(R.id.keyHomeButton).setOnClickListener { moveCursorHome() }
+        findViewById<Button>(R.id.keyEndButton).setOnClickListener { moveCursorEnd() }
+        findViewById<Button>(R.id.keyLeftButton).setOnClickListener { moveCursorBy(-1) }
+        findViewById<Button>(R.id.keyRightButton).setOnClickListener { moveCursorBy(1) }
+        findViewById<Button>(R.id.keyUpButton).setOnClickListener { browseHistory(previous = true) }
+        findViewById<Button>(R.id.keyDownButton).setOnClickListener { browseHistory(previous = false) }
+        findViewById<Button>(R.id.keyPgUpButton).setOnClickListener { insertAtCursor(" --help") }
+        findViewById<Button>(R.id.keyPgDnButton).setOnClickListener { insertAtCursor(" | less") }
 
         printWelcomeBanner()
         startShellSession()
@@ -223,6 +234,22 @@ class MainActivity : AppCompatActivity() {
         val start = inputCommand.selectionStart.coerceAtLeast(0)
         val end = inputCommand.selectionEnd.coerceAtLeast(0)
         inputCommand.text?.replace(minOf(start, end), maxOf(start, end), text, 0, text.length)
+        moveCursorEnd()
+    }
+
+    private fun moveCursorHome() {
+        inputCommand.setSelection(0)
+    }
+
+    private fun moveCursorEnd() {
+        inputCommand.setSelection(inputCommand.text?.length ?: 0)
+    }
+
+    private fun moveCursorBy(delta: Int) {
+        val len = inputCommand.text?.length ?: 0
+        val cur = inputCommand.selectionStart.coerceAtLeast(0)
+        val next = (cur + delta).coerceIn(0, len)
+        inputCommand.setSelection(next)
     }
 
     private fun printWelcomeBanner() {

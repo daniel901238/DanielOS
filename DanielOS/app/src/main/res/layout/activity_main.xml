@@ -206,54 +206,146 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/keyEscButton"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ESC"
-                    android:textSize="10sp" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/keyTabButton"
+                    <Button
+                        android:id="@+id/keyEscButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ESC"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyTabButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="TAB"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyCtrlButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="CTRL"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyAltButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="ALT"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keySlashButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="/"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyDashButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="-"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyPipeButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="|"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyTildeButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="~"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="TAB"
-                    android:textSize="10sp" />
+                    android:orientation="horizontal"
+                    android:layout_marginTop="4dp">
 
-                <Button
-                    android:id="@+id/keySlashButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="/"
-                    android:textSize="10sp" />
+                    <Button
+                        android:id="@+id/keyHomeButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HOME"
+                        android:textSize="10sp" />
 
-                <Button
-                    android:id="@+id/keyDashButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="-"
-                    android:textSize="10sp" />
+                    <Button
+                        android:id="@+id/keyUpButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="↑"
+                        android:textSize="10sp" />
 
-                <Button
-                    android:id="@+id/keyPipeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="|"
-                    android:textSize="10sp" />
+                    <Button
+                        android:id="@+id/keyEndButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="END"
+                        android:textSize="10sp" />
 
-                <Button
-                    android:id="@+id/keyTildeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="~"
-                    android:textSize="10sp" />
+                    <Button
+                        android:id="@+id/keyPgUpButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="PGUP"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyLeftButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="←"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyDownButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="↓"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyRightButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="→"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/keyPgDnButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="PGDN"
+                        android:textSize="10sp" />
+                </LinearLayout>
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
