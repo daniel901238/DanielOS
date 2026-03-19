@@ -91,6 +91,14 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         }
+        inputCommand.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                submitCurrentCommand()
+                true
+            } else {
+                false
+            }
+        }
 
         findViewById<Button>(R.id.clearButton).setOnClickListener {
             outputText.text = "DanielOS v1.2 (termux-style info + extra keys)"
