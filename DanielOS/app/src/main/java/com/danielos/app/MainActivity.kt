@@ -354,9 +354,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun appendPrompt() {
-        val user = "danielos"
-        val shortCwd = currentDir.substringAfterLast('/').ifBlank { "/" }
-        outputText.append("\n$user@android:$shortCwd $ ")
+        outputText.append("\n$ ")
         trimLogIfNeeded()
         persistUiState()
         outputScroll.post { outputScroll.fullScroll(ScrollView.FOCUS_DOWN) }
