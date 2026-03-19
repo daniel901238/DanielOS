@@ -354,10 +354,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun appendPrompt() {
-        outputText.append("\n$ ")
+        // Inline input row handles actual typing prompt.
+        // Keep output scroll pinned to bottom and focus the input field.
         trimLogIfNeeded()
         persistUiState()
         outputScroll.post { outputScroll.fullScroll(ScrollView.FOCUS_DOWN) }
+        focusInputField()
     }
 
     private fun trimLogIfNeeded() {
