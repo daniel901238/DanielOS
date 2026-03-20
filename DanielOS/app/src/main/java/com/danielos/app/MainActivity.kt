@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     private var internalEdit = false
 
     companion object {
-        private const val MARK_EXIT = "__EXIT__"
         private const val MARK_PWD = "__PWD__"
         private const val PROMPT = "$ "
     }
@@ -141,6 +140,13 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        // Move output to next line after user-entered command.
+        internalEdit = true
+        val withNewline = terminalEdit.text?.toString().orEmpty() + "\n"
+        terminalEdit.setText(withNewline)
+        terminalEdit.setSelection(terminalEdit.text?.length ?: 0)
+        internalEdit = false
+
         when (cmd.lowercase(Locale.ROOT)) {
             "help" -> {
                 appendOutput("Built-ins: help, info")
@@ -161,7 +167,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val wrapped = "{ $cmd; _ec=\\$?; printf '$MARK_EXIT%s\\n' \"\$_ec\"; printf '$MARK_PWD%s\\n' \"\$PWD\"; }"
+        val wrapped = "{ $cmd; printf '$MARK_PWD%s\\n' \"\$PWD\"; }"
         shellSession.send(wrapped).onFailure {
             appendOutput("[error] send failed: ${it.message}")
             appendPrompt()
@@ -174,13 +180,10 @@ class MainActivity : AppCompatActivity() {
             onLine = { line ->
                 runOnUiThread {
                     when {
-                        line.startsWith(MARK_EXIT) -> {
-                            // Hide raw exit marker for cleaner terminal feel.
-                            appendPrompt()
-                        }
                         line.startsWith(MARK_PWD) -> {
                             currentDir = line.removePrefix(MARK_PWD)
                             setShellReady(shellReady)
+                            appendPrompt()
                         }
                         else -> appendOutput(line)
                     }
