@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     when {
                         line.startsWith(MARK_EXIT) -> {
-                            appendOutput("[exit=${line.removePrefix(MARK_EXIT)}]")
+                            // Hide raw exit marker for cleaner terminal feel.
                             appendPrompt()
                         }
                         line.startsWith(MARK_PWD) -> {
