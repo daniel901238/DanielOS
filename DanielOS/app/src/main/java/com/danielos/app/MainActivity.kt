@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val wrapped = "{ $cmd; _ec=\\$?; printf '$MARK_EXIT%s\\n' \"\\$_ec\"; printf '$MARK_PWD%s\\n' \"\\$PWD\"; }"
+        val wrapped = "{ $cmd; _ec=\\$?; printf '$MARK_EXIT%s\\n' \"\\${'$'}_ec\"; printf '$MARK_PWD%s\\n' \"\\${'$'}PWD\"; }"
         shellSession.send(wrapped).onFailure {
             appendOutput("[error] send failed: ${it.message}")
             appendPrompt()
