@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val wrapped = "{ $cmd; _ec=\\$?; printf '$MARK_EXIT%s\\n' \"\\${'$'}_ec\"; printf '$MARK_PWD%s\\n' \"\\${'$'}PWD\"; }"
+        val wrapped = "{ $cmd; _ec=\\$?; printf '$MARK_EXIT%s\\n' \"\$_ec\"; printf '$MARK_PWD%s\\n' \"\$PWD\"; }"
         shellSession.send(wrapped).onFailure {
             appendOutput("[error] send failed: ${it.message}")
             appendPrompt()
@@ -174,7 +174,10 @@ class MainActivity : AppCompatActivity() {
             onLine = { line ->
                 runOnUiThread {
                     when {
-                        line.startsWith(MARK_EXIT) -> appendOutput("[exit=${line.removePrefix(MARK_EXIT)}]")
+                        line.startsWith(MARK_EXIT) -> {
+                            appendOutput("[exit=${line.removePrefix(MARK_EXIT)}]")
+                            appendPrompt()
+                        }
                         line.startsWith(MARK_PWD) -> {
                             currentDir = line.removePrefix(MARK_PWD)
                             setShellReady(shellReady)
