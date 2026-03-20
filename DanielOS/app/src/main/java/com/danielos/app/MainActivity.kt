@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             appendPrompt()
         }
 
-        setTerminalText("Welcome to DanielOS\nType help or info\n")
+        setTerminalText("Welcome to DanielOS\n\nDocs:      https://danielos-temp.github.io\nCommunity: https://github.com/daniel901238/DanielOS\n\nUse: help, info, ls -al\n")
         startShellSession()
     }
 
