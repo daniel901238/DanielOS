@@ -3,351 +3,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp">
-
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="DanielOS Terminal"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:paddingBottom="4dp" />
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/statusText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="mode=local-fallback | shell=starting"
+        android:text="mode=direct-terminal | shell=starting"
         android:textSize="11sp"
-        android:textColor="#5C6BC0"
+        android:textColor="#64B5F6"
         android:paddingBottom="6dp" />
 
-    <!-- Terminal screen area (output + direct input line) -->
-    <LinearLayout
+    <EditText
+        android:id="@+id/terminalEdit"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
         android:background="#101316"
-        android:padding="8dp">
-
-        <ScrollView
-            android:id="@+id/outputScroll"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fillViewport="true"
-            android:scrollbarStyle="outsideInset"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
-
-            <TextView
-                android:id="@+id/outputText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#C9F9D4"
-                android:textSize="13sp"
-                android:typeface="monospace"
-                android:text="DanielOS"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:clickable="true" />
-        </ScrollView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="6dp"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/promptText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="$"
-                android:textColor="#64B5F6"
-                android:textSize="13sp"
-                android:typeface="monospace"
-                android:paddingEnd="6dp" />
-
-            <EditText
-                android:id="@+id/inputCommand"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint=""
-                android:singleLine="true"
-                android:imeOptions="actionGo"
-                android:background="@android:color/transparent"
-                android:textColor="#C9F9D4"
-                android:textColorHint="#4CAF50"
-                android:textSize="13sp"
-                android:typeface="monospace"
-                android:padding="0dp" />
-
-            <Button
-                android:id="@+id/runButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="↵"
-                android:textSize="11sp"
-                android:minWidth="56dp"
-                android:layout_marginStart="6dp" />
-        </LinearLayout>
-    </LinearLayout>
+        android:textColor="#C9F9D4"
+        android:textColorHint="#4CAF50"
+        android:textSize="13sp"
+        android:typeface="monospace"
+        android:gravity="top|start"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:imeOptions="flagNoExtractUi"
+        android:overScrollMode="ifContentScrolls"
+        android:padding="10dp"
+        android:scrollbars="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp">
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp"
+        android:weightSum="4">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/restartButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="4">
+            android:layout_weight="1"
+            android:text="재시작"
+            android:textSize="11sp" />
 
-            <Button
-                android:id="@+id/restartButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="재시작"
-                android:textSize="11sp"
-                android:maxLines="1" />
-
-            <Button
-                android:id="@+id/interruptButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="중단"
-                android:textSize="11sp"
-                android:layout_marginStart="6dp"
-                android:maxLines="1" />
-
-            <Button
-                android:id="@+id/clearButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="지우기"
-                android:textSize="11sp"
-                android:layout_marginStart="6dp"
-                android:maxLines="1" />
-
-            <Button
-                android:id="@+id/helpButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="도움말"
-                android:textSize="11sp"
-                android:layout_marginStart="6dp"
-                android:maxLines="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/interruptButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="6dp"
-            android:weightSum="4">
+            android:layout_weight="1"
+            android:text="중단"
+            android:textSize="11sp"
+            android:layout_marginStart="6dp" />
 
-            <Button
-                android:id="@+id/prevHistoryButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="이전"
-                android:textSize="11sp"
-                android:maxLines="1" />
-
-            <Button
-                android:id="@+id/nextHistoryButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="다음"
-                android:textSize="11sp"
-                android:layout_marginStart="6dp"
-                android:maxLines="1" />
-
-            <Button
-                android:id="@+id/exportLogButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="저장"
-                android:textSize="11sp"
-                android:layout_marginStart="6dp"
-                android:maxLines="1" />
-
-            <Button
-                android:id="@+id/copyLogButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="복사"
-                android:textSize="11sp"
-                android:layout_marginStart="6dp"
-                android:maxLines="1" />
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:scrollbars="none">
+            android:layout_weight="1"
+            android:text="지우기"
+            android:textSize="11sp"
+            android:layout_marginStart="6dp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/keyEscButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ESC"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyTabButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="TAB"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyCtrlButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="CTRL"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyAltButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="ALT"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keySlashButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="/"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyDashButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="-"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyPipeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="|"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyTildeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="~"
-                        android:textSize="10sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="4dp">
-
-                    <Button
-                        android:id="@+id/keyHomeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="HOME"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyUpButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="↑"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyEndButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="END"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyPgUpButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="PGUP"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyLeftButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="←"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyDownButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="↓"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyRightButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="→"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/keyPgDnButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="PGDN"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </HorizontalScrollView>
+        <Button
+            android:id="@+id/helpButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="도움말"
+            android:textSize="11sp"
+            android:layout_marginStart="6dp" />
     </LinearLayout>
-
 </LinearLayout>
