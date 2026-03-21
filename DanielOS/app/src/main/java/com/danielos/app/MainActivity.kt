@@ -3,7 +3,10 @@ package com.danielos.app
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.graphics.Rect
 import android.view.KeyEvent
+import android.view.View
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -16,6 +19,7 @@ import java.util.concurrent.Executors
 class MainActivity : AppCompatActivity() {
     private lateinit var terminalEdit: EditText
     private lateinit var statusText: TextView
+    private lateinit var bottomControls: View
 
     private val ioExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private lateinit var shellSession: ShellSession
@@ -37,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         terminalEdit = findViewById(R.id.terminalEdit)
         statusText = findViewById(R.id.statusText)
+        bottomControls = findViewById(R.id.bottomControls)
 
         val appHome = filesDir.absolutePath
         shellSession = PtyShellSession(ioExecutor, appHome)
@@ -81,8 +86,25 @@ class MainActivity : AppCompatActivity() {
             appendPrompt()
         }
 
+        setupKeyboardAwareControls()
+
         setTerminalText("Welcome to DanielOS\n\nDocs:      https://danielos-temp.github.io\nCommunity: https://github.com/daniel901238/DanielOS\n\nUse: help, info, ls -al\n")
         startShellSession()
+    }
+
+    private fun setupKeyboardAwareControls() {
+        val root = findViewById<View>(android.R.id.content)
+        root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val r = Rect()
+                root.getWindowVisibleDisplayFrame(r)
+                val screenHeight = root.rootView.height
+                if (screenHeight <= 0) return
+                val keypadHeight = screenHeight - r.bottom
+                val keyboardVisible = keypadHeight > screenHeight * 0.15
+                bottomControls.visibility = if (keyboardVisible) View.VISIBLE else View.GONE
+            }
+        })
     }
 
     private fun setShellReady(ready: Boolean) {
