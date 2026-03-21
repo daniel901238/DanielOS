@@ -86,6 +86,25 @@ class MainActivity : AppCompatActivity() {
             appendPrompt()
         }
 
+        // Extra-key buttons
+        findViewById<Button>(R.id.keyEscButton).setOnClickListener { insertAtCursor("\u001B") }
+        findViewById<Button>(R.id.keyTabButton).setOnClickListener { insertAtCursor("\t") }
+        findViewById<Button>(R.id.keyCtrlButton).setOnClickListener { insertAtCursor("^") }
+        findViewById<Button>(R.id.keyAltButton).setOnClickListener { insertAtCursor("ALT+") }
+        findViewById<Button>(R.id.keySlashButton).setOnClickListener { insertAtCursor("/") }
+        findViewById<Button>(R.id.keyDashButton).setOnClickListener { insertAtCursor("-") }
+        findViewById<Button>(R.id.keyPipeButton).setOnClickListener { insertAtCursor("|") }
+        findViewById<Button>(R.id.keyTildeButton).setOnClickListener { insertAtCursor("~") }
+
+        findViewById<Button>(R.id.keyHomeButton).setOnClickListener { moveCursorToCommandStart() }
+        findViewById<Button>(R.id.keyEndButton).setOnClickListener { moveCursorToEnd() }
+        findViewById<Button>(R.id.keyLeftButton).setOnClickListener { moveCursorBy(-1) }
+        findViewById<Button>(R.id.keyRightButton).setOnClickListener { moveCursorBy(1) }
+        findViewById<Button>(R.id.keyUpButton).setOnClickListener { moveCursorToCommandStart() }
+        findViewById<Button>(R.id.keyDownButton).setOnClickListener { moveCursorToEnd() }
+        findViewById<Button>(R.id.keyPgUpButton).setOnClickListener { insertAtCursor(" --help") }
+        findViewById<Button>(R.id.keyPgDnButton).setOnClickListener { insertAtCursor(" | less") }
+
         setupKeyboardAwareControls()
 
         setTerminalText("Welcome to DanielOS\n\nDocs:      https://danielos-temp.github.io\nCommunity: https://github.com/daniel901238/DanielOS\n\nUse: help, info, ls -al\n")
@@ -140,6 +159,28 @@ class MainActivity : AppCompatActivity() {
         internalEdit = false
         inputStart = terminalEdit.text?.length ?: 0
         forceCursorToEnd()
+    }
+
+    private fun insertAtCursor(text: String) {
+        val editable = terminalEdit.text ?: return
+        val cur = terminalEdit.selectionStart.coerceAtLeast(inputStart)
+        editable.insert(cur, text)
+        terminalEdit.setSelection((cur + text.length).coerceAtMost(editable.length))
+    }
+
+    private fun moveCursorToCommandStart() {
+        terminalEdit.setSelection(inputStart.coerceAtMost(terminalEdit.text?.length ?: 0))
+    }
+
+    private fun moveCursorToEnd() {
+        terminalEdit.setSelection(terminalEdit.text?.length ?: 0)
+    }
+
+    private fun moveCursorBy(delta: Int) {
+        val len = terminalEdit.text?.length ?: 0
+        val cur = terminalEdit.selectionStart.coerceAtLeast(inputStart)
+        val next = (cur + delta).coerceIn(inputStart, len)
+        terminalEdit.setSelection(next)
     }
 
     private fun forceCursorToEnd() {
