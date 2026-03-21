@@ -4,17 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#000000"
-    android:padding="8dp">
+    android:padding="6dp">
 
     <TextView
         android:id="@+id/statusText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="mode=direct-terminal | shell=starting"
-        android:textSize="10sp"
+        android:textSize="9sp"
         android:textColor="#9E9E9E"
         android:typeface="monospace"
-        android:paddingBottom="4dp" />
+        android:paddingBottom="3dp" />
 
     <EditText
         android:id="@+id/terminalEdit"
@@ -24,21 +24,21 @@
         android:background="#000000"
         android:textColor="#FFFFFF"
         android:textColorHint="#BDBDBD"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:typeface="monospace"
-        android:lineSpacingExtra="1dp"
+        android:lineSpacingExtra="0dp"
         android:gravity="top|start"
         android:inputType="textMultiLine|textNoSuggestions"
         android:imeOptions="flagNoExtractUi"
         android:overScrollMode="ifContentScrolls"
-        android:padding="6dp"
+        android:padding="4dp"
         android:scrollbars="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="4dp"
         android:weightSum="4">
 
         <Button
@@ -47,7 +47,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="재시작"
-            android:textSize="10sp"
+            android:textSize="9sp"
+            android:minHeight="0dp"
+            android:padding="2dp"
             android:textColor="#FFFFFF"
             android:background="#000000" />
 
@@ -57,9 +59,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="중단"
-            android:textSize="10sp"
+            android:textSize="9sp"
+            android:minHeight="0dp"
+            android:padding="2dp"
             android:textColor="#FFFFFF"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="3dp"
             android:background="#000000" />
 
         <Button
@@ -68,9 +72,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="지우기"
-            android:textSize="10sp"
+            android:textSize="9sp"
+            android:minHeight="0dp"
+            android:padding="2dp"
             android:textColor="#FFFFFF"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="3dp"
             android:background="#000000" />
 
         <Button
@@ -79,16 +85,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="도움말"
-            android:textSize="10sp"
+            android:textSize="9sp"
+            android:minHeight="0dp"
+            android:padding="2dp"
             android:textColor="#FFFFFF"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="3dp"
             android:background="#000000" />
     </LinearLayout>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:scrollbars="none">
 
         <LinearLayout
@@ -106,7 +114,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="ESC"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -114,9 +124,11 @@
                     android:id="@+id/keySlashButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="/"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -124,9 +136,11 @@
                     android:id="@+id/keyDashButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="-"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -134,9 +148,11 @@
                     android:id="@+id/keyHomeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="HOME"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -144,9 +160,11 @@
                     android:id="@+id/keyUpButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="↑"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -154,9 +172,11 @@
                     android:id="@+id/keyEndButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="END"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -164,9 +184,11 @@
                     android:id="@+id/keyPgUpButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="PGUP"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
             </LinearLayout>
@@ -182,7 +204,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TAB"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -190,9 +214,11 @@
                     android:id="@+id/keyCtrlButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="CTRL"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -200,9 +226,11 @@
                     android:id="@+id/keyAltButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="ALT"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -210,9 +238,11 @@
                     android:id="@+id/keyLeftButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="←"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -220,9 +250,11 @@
                     android:id="@+id/keyDownButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="↓"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -230,9 +262,11 @@
                     android:id="@+id/keyRightButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="→"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -240,9 +274,11 @@
                     android:id="@+id/keyPgDnButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="PGDN"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -250,9 +286,11 @@
                     android:id="@+id/keyPipeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="|"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
 
@@ -260,9 +298,11 @@
                     android:id="@+id/keyTildeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="3dp"
                     android:text="~"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
+                    android:minHeight="0dp"
+                    android:padding="2dp"
                     android:textColor="#FFFFFF"
                     android:background="#000000" />
             </LinearLayout>
