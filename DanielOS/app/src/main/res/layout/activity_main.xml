@@ -24,7 +24,7 @@
         android:background="#000000"
         android:textColor="#FFFFFF"
         android:textColorHint="#BDBDBD"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:typeface="monospace"
         android:lineSpacingExtra="0dp"
         android:gravity="top|start"
