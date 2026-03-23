@@ -210,15 +210,33 @@ class MainActivity : AppCompatActivity() {
         terminalEdit.setSelection(terminalEdit.text?.length ?: 0)
         internalEdit = false
 
-        when (cmd.lowercase(Locale.ROOT)) {
-            "help" -> {
-                appendOutput("Built-ins: help, info")
+        when {
+            cmd.equals("help", ignoreCase = true) -> {
+                appendOutput("Built-ins: help, info, linux-on, linux-off")
+                appendOutput("Linux cmds: pwd, ls -al, uname -a, whoami")
                 appendPrompt()
                 return
             }
-            "info" -> {
+            cmd.equals("info", ignoreCase = true) -> {
                 appendOutput("AppHome: ${filesDir.absolutePath}")
                 appendOutput("Shell: ${if (shellReady) "ready" else "starting"}, cwd=$currentDir")
+                appendPrompt()
+                return
+            }
+            cmd.equals("linux-on", ignoreCase = true) -> {
+                appendOutput("[linux-mode] 준비 중: 다음 단계에서 proot rootfs 연결 예정")
+                appendOutput("[linux-mode] 현재는 direct-terminal local shell 동작")
+                appendPrompt()
+                return
+            }
+            cmd.equals("linux-off", ignoreCase = true) -> {
+                appendOutput("[linux-mode] local shell 모드 유지")
+                appendPrompt()
+                return
+            }
+            cmd.startsWith("pkg ") || cmd.equals("pkg", ignoreCase = true) -> {
+                appendOutput("[pkg] 이 환경은 Termux가 아니라 pkg를 직접 지원하지 않음")
+                appendOutput("[hint] linux-on 이후 apt 기반 모드로 연결 예정")
                 appendPrompt()
                 return
             }
