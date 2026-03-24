@@ -240,6 +240,15 @@ class MainActivity : AppCompatActivity() {
                 appendPrompt()
                 return
             }
+            cmd.startsWith("vi ") || cmd.equals("vi", ignoreCase = true) ||
+                cmd.startsWith("vim ") || cmd.equals("vim", ignoreCase = true) ||
+                cmd.startsWith("nano ") || cmd.equals("nano", ignoreCase = true) ||
+                cmd.startsWith("less ") || cmd.equals("less", ignoreCase = true) -> {
+                appendOutput("[pty-needed] vi/vim/nano/less 같은 인터랙티브 TUI는 현재 모드에서 불안정함")
+                appendOutput("[hint] 지금은 cat/echo/sed 같은 비대화형 명령 위주 사용 권장")
+                appendPrompt()
+                return
+            }
         }
 
         if (!shellReady) {
@@ -248,7 +257,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val wrapped = "{ $cmd; printf '$MARK_PWD%s\\n' \"\$PWD\"; }"
+        val wrapped = "{ $cmd; printf '$MARK_PWD%s\\n' \"${'$'}PWD\"; }"
         shellSession.send(wrapped).onFailure {
             appendOutput("[error] send failed: ${it.message}")
             appendPrompt()
