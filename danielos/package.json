@@ -1,0 +1,17 @@
+{
+  "name": "danielos-shell",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "danielsh": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node ./src/cli.js",
+    "test:smoke": "node ./src/smoke.js",
+    "test:compat": "node ./src/test-runner.js",
+    "test:en": "node ./src/test-en-snapshot.js",
+    "lint:warnings": "node ./src/lint-warning-keys.js",
+    "test:all": "npm run lint:warnings && npm run test:compat && npm run test:en"
+  }
+}

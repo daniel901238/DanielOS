@@ -1,0 +1,34 @@
+echo hello
+uname -a | head -n 1
+$$ echo prompt-fix-ok
+ll | head -n 2
+ps aux | head -n 2
+df -h | head -n 3
+ip a | head -n 8
+which node
+whereis node
+locate package.json | head -n 3
+!grep -P 'hello' README.md
+egrep 'DanielOS' README.md
+fgrep 'DanielOS' README.md
+sed -r 's/(DanielOS)/[\1]/' README.md | head -n 2
+find . -maxdepth 2 -printf '%f\n' | head -n 3
+find . -regextype posix-egrep -regex './src/.*' | head -n 3
+awk --posix '{print NR ":" $0}' README.md | head -n 2
+printf 'a\nb\n' | xargs -r -n1 echo
+stat -c '%n %s' README.md
+readlink -f .
+realpath .
+du -sh .
+ss -lnt
+netstat -lnt
+chmod +x src/cli.js
+git -p status
+cp -n README.md ./readme.copy || true
+mv -n ./readme.copy ./readme.copy2 || true
+ln -s README.md ./readme.link || true
+install -m 644 README.md ./readme.install || true
+touch -d '2026-03-24 10:00:00' ./readme.touch || true
+!chown root:root README.md
+!tar --warning=no-unknown-keyword -tf package.json
+!systemctl status
