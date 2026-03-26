@@ -33,10 +33,24 @@ npm run test:smoke
 npm run test:compat
 npm run test:en
 npm run lint:warnings
+npm run test:openclaw          # 설치 없이 사전 점검
+npm run test:openclaw:install  # 실제 설치 스모크
 npm run test:all
 ```
 
 테스트 리포트는 `reports/latest.json`, `reports/latest-compat.json`, `reports/latest-en-snapshot.json`에 저장됨.
+
+## OpenClaw 설치 스모크 (DanielOS 대상)
+```bash
+cd /data/data/com.termux/files/home/.openclaw/workspace/danielos
+npm run test:openclaw:install
+```
+
+검증 항목:
+- Node/npm 실행 가능 여부
+- npm registry에서 `openclaw` 패키지 조회
+- `npx -y openclaw --version` 설치/실행 성공 여부
+- `openclaw gateway status` 기본 동작 확인
 
 ## 다음 단계
 1. 내장 명령(alias/wrapper) 확장 (`ps aux`, `df -h`, `ip a` 등)

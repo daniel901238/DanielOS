@@ -12,6 +12,8 @@
     "test:compat": "node ./src/test-runner.js",
     "test:en": "node ./src/test-en-snapshot.js",
     "lint:warnings": "node ./src/lint-warning-keys.js",
+    "test:openclaw": "node ./src/openclaw-smoke.js",
+    "test:openclaw:install": "OPENCLAW_SMOKE_INSTALL=1 node ./src/openclaw-smoke.js --install",
     "test:all": "npm run lint:warnings && npm run test:compat && npm run test:en"
   }
 }
