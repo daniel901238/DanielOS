@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             appendPrompt()
         }
         findViewById<Button>(R.id.helpButton).setOnClickListener {
-            appendOutput("Built-ins: help, info")
+            appendOutput("Built-ins: help, info, openclaw-install, openclaw-test")
             appendOutput("Linux cmds: pwd, ls -al, uname -a, whoami")
             appendPrompt()
         }
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
         setupKeyboardAwareControls()
 
-        setTerminalText("Welcome to DanielOS\n\nDocs:      https://danielos-temp.github.io\nCommunity: https://github.com/daniel901238/DanielOS\n\nUse: help, info, ls -al\n")
+        setTerminalText("Welcome to DanielOS\n\nDocs:      https://danielos-temp.github.io\nCommunity: https://github.com/daniel901238/DanielOS\n\nUse: help, info, openclaw-install, openclaw-test\n")
         startShellSession()
     }
 
@@ -221,6 +221,26 @@ class MainActivity : AppCompatActivity() {
                 appendOutput("AppHome: ${filesDir.absolutePath}")
                 appendOutput("Shell: ${if (shellReady) "ready" else "starting"}, cwd=$currentDir")
                 appendPrompt()
+                return
+            }
+            cmd.equals("openclaw-install", ignoreCase = true) -> {
+                appendOutput("[openclaw] 설치를 시작합니다... (최초 1회는 시간이 걸릴 수 있음)")
+                val installCmd = "mkdir -p ~/.danielos/bin && npx -y openclaw --version && cat > ~/.danielos/bin/openclaw-danielos <<'EOF'\n#!/data/data/com.termux/files/usr/bin/bash\nexec npx -y openclaw \"\$@\"\nEOF\nchmod +x ~/.danielos/bin/openclaw-danielos && ~/.danielos/bin/openclaw-danielos --version"
+                val wrappedInstall = "{ $installCmd; printf '$MARK_PWD%s\\n' \"${'$'}PWD\"; }"
+                shellSession.send(wrappedInstall).onFailure {
+                    appendOutput("[error] openclaw install failed: ${it.message}")
+                    appendPrompt()
+                }
+                return
+            }
+            cmd.equals("openclaw-test", ignoreCase = true) -> {
+                appendOutput("[openclaw] 테스트를 시작합니다...")
+                val testCmd = "~/.danielos/bin/openclaw-danielos --version && ~/.danielos/bin/openclaw-danielos gateway --help"
+                val wrappedTest = "{ $testCmd; printf '$MARK_PWD%s\\n' \"${'$'}PWD\"; }"
+                shellSession.send(wrappedTest).onFailure {
+                    appendOutput("[error] openclaw test failed: ${it.message}")
+                    appendPrompt()
+                }
                 return
             }
             cmd.equals("linux-on", ignoreCase = true) -> {
