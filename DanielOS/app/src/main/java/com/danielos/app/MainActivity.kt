@@ -213,6 +213,7 @@ class MainActivity : AppCompatActivity() {
         when {
             cmd.equals("help", ignoreCase = true) -> {
                 appendOutput("Built-ins: help, info, linux-on, linux-off")
+                appendOutput("OpenClaw: openclaw-install, openclaw-test, gateway-status, gateway-run")
                 appendOutput("Linux cmds: pwd, ls -al, uname -a, whoami")
                 appendPrompt()
                 return
@@ -221,6 +222,25 @@ class MainActivity : AppCompatActivity() {
                 appendOutput("AppHome: ${filesDir.absolutePath}")
                 appendOutput("Shell: ${if (shellReady) "ready" else "starting"}, cwd=$currentDir")
                 appendPrompt()
+                return
+            }
+            cmd.equals("openclaw-install", ignoreCase = true) -> {
+                appendOutput("[openclaw] 설치 시도: npm install -g openclaw")
+                runInternalShellCommand("npm install -g openclaw || pnpm add -g openclaw")
+                return
+            }
+            cmd.equals("openclaw-test", ignoreCase = true) -> {
+                runInternalShellCommand("openclaw --version || ${'$'}PREFIX/bin/env node ${'$'}PREFIX/bin/openclaw --version")
+                runInternalShellCommand("openclaw gateway status || ${'$'}PREFIX/bin/env node ${'$'}PREFIX/bin/openclaw gateway status")
+                return
+            }
+            cmd.equals("gateway-status", ignoreCase = true) -> {
+                runInternalShellCommand("openclaw gateway status || ${'$'}PREFIX/bin/env node ${'$'}PREFIX/bin/openclaw gateway status")
+                return
+            }
+            cmd.equals("gateway-run", ignoreCase = true) -> {
+                appendOutput("[gateway-run] 실행 시도: openclaw gateway start")
+                runInternalShellCommand("openclaw gateway start || ${'$'}PREFIX/bin/env node ${'$'}PREFIX/bin/openclaw gateway start")
                 return
             }
             cmd.equals("linux-on", ignoreCase = true) -> {
@@ -258,6 +278,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         val wrapped = "{ $cmd; printf '$MARK_PWD%s\\n' \"${'$'}PWD\"; }"
+        shellSession.send(wrapped).onFailure {
+            appendOutput("[error] send failed: ${it.message}")
+            appendPrompt()
+        }
+    }
+
+    private fun runInternalShellCommand(command: String) {
+        if (!shellReady) {
+            appendOutput("[wait] shell not ready")
+            appendPrompt()
+            return
+        }
+
+        val wrapped = "{ $command; printf '$MARK_PWD%s\\n' \"${'$'}PWD\"; }"
         shellSession.send(wrapped).onFailure {
             appendOutput("[error] send failed: ${it.message}")
             appendPrompt()
