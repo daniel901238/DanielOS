@@ -224,8 +224,8 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             cmd.equals("openclaw-install", ignoreCase = true) -> {
-                appendOutput("[openclaw] 설치를 시작합니다... (최초 1회는 시간이 걸릴 수 있음)")
-                val installCmd = "mkdir -p ~/.danielos/bin && npx -y openclaw --version && cat > ~/.danielos/bin/openclaw-danielos <<'EOF'\n#!/data/data/com.termux/files/usr/bin/bash\nexec npx -y openclaw \"\$@\"\nEOF\nchmod +x ~/.danielos/bin/openclaw-danielos && ~/.danielos/bin/openclaw-danielos --version"
+                appendOutput("[openclaw] DanielOS 앱 내부 설치를 시작합니다... (최초 1회는 시간이 걸릴 수 있음)")
+                val installCmd = "mkdir -p \$HOME/.danielos/bin \$HOME/.danielos/openclaw && /data/data/com.termux/files/usr/bin/npx -y openclaw --version && printf '#!/system/bin/sh\nexec /data/data/com.termux/files/usr/bin/npx -y openclaw \"\$@\"\n' > \$HOME/.danielos/bin/openclaw-danielos && chmod +x \$HOME/.danielos/bin/openclaw-danielos && \$HOME/.danielos/bin/openclaw-danielos --version"
                 val wrappedInstall = "{ $installCmd; printf '$MARK_PWD%s\\n' \"${'$'}PWD\"; }"
                 shellSession.send(wrappedInstall).onFailure {
                     appendOutput("[error] openclaw install failed: ${it.message}")
@@ -234,8 +234,8 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             cmd.equals("openclaw-test", ignoreCase = true) -> {
-                appendOutput("[openclaw] 테스트를 시작합니다...")
-                val testCmd = "~/.danielos/bin/openclaw-danielos --version && ~/.danielos/bin/openclaw-danielos gateway --help"
+                appendOutput("[openclaw] DanielOS 앱 내부 테스트를 시작합니다...")
+                val testCmd = "\$HOME/.danielos/bin/openclaw-danielos --version && \$HOME/.danielos/bin/openclaw-danielos gateway --help"
                 val wrappedTest = "{ $testCmd; printf '$MARK_PWD%s\\n' \"${'$'}PWD\"; }"
                 shellSession.send(wrappedTest).onFailure {
                     appendOutput("[error] openclaw test failed: ${it.message}")
